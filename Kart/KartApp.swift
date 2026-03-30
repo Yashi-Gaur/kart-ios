@@ -11,7 +11,7 @@ import SwiftUI
 struct KartApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ListInputView()
         }
     }
 }
