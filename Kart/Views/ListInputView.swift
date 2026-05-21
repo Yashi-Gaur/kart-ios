@@ -1,38 +1,26 @@
-//
-//  ListInputView.swift
-//  Kart
-//
-//  Created by Yashi Gaur on 30/03/26.
-//
-
 import SwiftUI
 
-/// Main screen: User inputs shopping list and sees parsed results
 struct ListInputView: View {
     
-    // MARK: - State
-    
-    /// ViewModel manages all business logic and state
     @StateObject private var viewModel = SearchViewModel()
-    
-    // MARK: - Body
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                
-                // Input Section
-                inputSection
-                
-                Divider()
-                
-                // Results Section
-                if viewModel.isLoading {
-                    loadingView
-                } else if !viewModel.items.isEmpty {
-                    resultsSection
-                } else {
-                    emptyStateView
+            ScrollView {
+                VStack(spacing: 0) {
+                    
+                    inputSection
+                    
+                    Divider()
+                        .padding(.vertical, 16)
+                    
+                    if viewModel.isLoading {
+                        loadingView
+                    } else if !viewModel.itemsWithProducts.isEmpty {
+                        resultsContent
+                    } else {
+                        emptyStateView
+                    }
                 }
             }
             .navigationTitle("Kart")
@@ -54,7 +42,6 @@ struct ListInputView: View {
                 .font(.headline)
                 .foregroundColor(.secondary)
             
-            // Text input
             TextEditor(text: $viewModel.listText)
                 .frame(minHeight: 100, maxHeight: 150)
                 .padding(12)
@@ -65,17 +52,15 @@ struct ListInputView: View {
                         .stroke(Color(.systemGray4), lineWidth: 1)
                 )
             
-            // Placeholder hint (shown when empty)
             if viewModel.listText.isEmpty {
                 Text("e.g., \"2kg potatoes, PS5 controller, bean bag\"")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .padding(.top, -140)
                     .padding(.leading, 16)
-                    .allowsHitTesting(false)  // Let taps pass through to TextEditor
+                    .allowsHitTesting(false)
             }
             
-            // Action buttons
             HStack {
                 Button(action: viewModel.clear) {
                     Label("Clear", systemImage: "xmark.circle.fill")
@@ -108,37 +93,33 @@ struct ListInputView: View {
         VStack(spacing: 16) {
             ProgressView()
                 .scaleEffect(1.5)
-            Text("Parsing your list...")
+            Text("Searching for products...")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 60)
     }
     
-    // MARK: - Results Section
+    // MARK: - Results Content
     
-    private var resultsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+    private var resultsContent: some View {
+        VStack(alignment: .leading, spacing: 20) {
             
             // Header
             HStack {
-                Text("Found \(viewModel.itemCount) items")
+                Text("Found \(viewModel.totalProductCount) products for \(viewModel.itemCount) items")
                     .font(.headline)
                 Spacer()
             }
             .padding(.horizontal)
-            .padding(.top)
             
-            // List of items
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(viewModel.items) { item in
-                        ItemCard(item: item)
-                    }
-                }
-                .padding()
+            // Items with their products
+            ForEach(viewModel.itemsWithProducts) { itemWithProducts in
+                ItemSection(itemWithProducts: itemWithProducts)
             }
         }
+        .padding(.vertical)
     }
     
     // MARK: - Empty State
@@ -151,74 +132,167 @@ struct ListInputView: View {
             Text("Enter your shopping list above")
                 .font(.headline)
                 .foregroundColor(.secondary)
-            Text("We'll find the best places to buy each item")
+            Text("We'll find the best products with prices")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 60)
     }
 }
 
-// MARK: - Item Card Component
+// MARK: - Item Section (Item + Products)
 
-/// Individual card showing a parsed item
-struct ItemCard: View {
-    let item: ShoppingItem
+struct ItemSection: View {
+    let itemWithProducts: ItemWithProducts
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
             
-            // Top row: emoji + name + quantity
-            // Top row: icon + name + quantity
+            // Item header
             HStack {
-                Image(systemName: item.categoryIcon)  // ← NEW
-                    .font(.title2)
+                Image(systemName: itemWithProducts.shoppingItem.categoryIcon)
+                    .font(.title3)
                     .foregroundColor(.blue)
-                    .frame(width: 40)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(item.name)
+                    Text(itemWithProducts.shoppingItem.name)
                         .font(.headline)
                     
-                    Text("\(item.quantity) \(item.unit ?? "pc")")
+                    Text("\(itemWithProducts.shoppingItem.quantity) \(itemWithProducts.shoppingItem.unit ?? "pc") • \(itemWithProducts.shoppingItem.category.capitalized)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 
                 Spacer()
                 
-                // Category badge
-                Text(item.category.capitalized)
+                Text("\(itemWithProducts.products.count) options")
                     .font(.caption2)
                     .fontWeight(.semibold)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.blue.opacity(0.1))
-                    .foregroundColor(.blue)
+                    .background(Color.green.opacity(0.1))
+                    .foregroundColor(.green)
                     .cornerRadius(6)
             }
+            .padding(.horizontal)
             
-            // Bottom row: platforms
-            HStack(spacing: 4) {
-                Image(systemName: "storefront")
+            // Products horizontal scroll
+            if !itemWithProducts.products.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(itemWithProducts.products) { product in
+                            ProductCard(product: product)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            } else {
+                Text("No products found")
                     .font(.caption)
                     .foregroundColor(.secondary)
-                
-                Text(item.platformsDisplay)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
+        .padding(.vertical, 8)
+        .background(Color(.systemGray6).opacity(0.5))
         .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .padding(.horizontal)
     }
 }
 
-// MARK: - Preview
+// MARK: - Product Card
+
+struct ProductCard: View {
+    let product: Product
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            
+            // Product image
+            AsyncImage(url: URL(string: product.imageUrl)) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView()
+                        .frame(width: 140, height: 140)
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 140, height: 140)
+                        .clipped()
+                case .failure:
+                    Image(systemName: "photo")
+                        .font(.largeTitle)
+                        .foregroundColor(.secondary)
+                        .frame(width: 140, height: 140)
+                        .background(Color(.systemGray5))
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .cornerRadius(8)
+            
+            // Product details
+            VStack(alignment: .leading, spacing: 4) {
+                Text(product.name)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .lineLimit(2)
+                    .frame(height: 32, alignment: .top)
+                
+                Text(product.formattedPrice)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                HStack(spacing: 4) {
+                    if product.rating > 0 {
+                        Text(product.ratingDisplay)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Text("•")
+                        .foregroundColor(.secondary)
+                        .font(.caption2)
+                    
+                    Text(product.platform.capitalized)
+                        .font(.caption2)
+                        .foregroundColor(.blue)
+                }
+                
+                Text(product.deliveryInfo)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+            }
+            .frame(width: 140)
+            
+            // View button (placeholder - product URLs are empty for now)
+            Button(action: {
+                // TODO: Open product URL when available
+                print("View product: \(product.name)")
+            }) {
+                Text("View")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(6)
+            }
+            .frame(width: 140)
+        }
+        .padding(12)
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 2)
+        .frame(width: 164) // 140 + padding
+    }
+}
 
 #Preview {
     ListInputView()

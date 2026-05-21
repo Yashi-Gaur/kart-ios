@@ -1,14 +1,6 @@
-//
-//  ShoppingItem.swift
-//  Kart
-//
-//  Created by Yashi Gaur on 30/03/26.
-//
-
 import Foundation
 
 /// Represents a single item from the parsed shopping list
-/// This matches the backend's ParsedItem model
 struct ShoppingItem: Identifiable, Codable {
     let id: UUID
     let name: String
@@ -17,16 +9,12 @@ struct ShoppingItem: Identifiable, Codable {
     let unit: String?
     let platforms: [String]
     
-    /// Computed property: returns platforms as comma-separated string
-    /// e.g., ["blinkit", "zepto"] → "Blinkit, Zepto"
     var platformsDisplay: String {
         platforms
             .map { $0.capitalized.replacingOccurrences(of: "_", with: " ") }
             .joined(separator: ", ")
     }
     
-    /// Category emoji for visual display
-    /// Category icon (SF Symbol name) for visual display
     var categoryIcon: String {
         switch category.lowercased() {
         case "grocery":
@@ -42,7 +30,6 @@ struct ShoppingItem: Identifiable, Codable {
         }
     }
     
-    /// Initialize with ID auto-generated
     init(id: UUID = UUID(), name: String, category: String, quantity: Int, unit: String?, platforms: [String]) {
         self.id = id
         self.name = name
@@ -53,18 +40,86 @@ struct ShoppingItem: Identifiable, Codable {
     }
 }
 
-/// Response from backend /api/search endpoint
-struct SearchResponse: Codable {
-    let items: [BackendItem]
-    let rawInput: String
+/// Product from search results
+struct Product: Identifiable, Codable {
+    let id: UUID
+    let name: String
+    let price: Double
+    let currency: String
+    let imageUrl: String
+    let productUrl: String
+    let rating: Double
+    let reviewsCount: Int
+    let platform: String
+    let seller: String
+    let deliveryInfo: String
+    let inStock: Bool
+    let score: Double?
     
     enum CodingKeys: String, CodingKey {
-        case items
-        case rawInput = "raw_input"
+        case name, price, currency, rating, platform, seller, score
+        case imageUrl = "image_url"
+        case productUrl = "product_url"
+        case reviewsCount = "reviews_count"
+        case deliveryInfo = "delivery_info"
+        case inStock = "in_stock"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.name = try container.decode(String.self, forKey: .name)
+        self.price = try container.decode(Double.self, forKey: .price)
+        self.currency = try container.decode(String.self, forKey: .currency)
+        self.imageUrl = try container.decode(String.self, forKey: .imageUrl)
+        self.productUrl = try container.decode(String.self, forKey: .productUrl)
+        self.rating = try container.decode(Double.self, forKey: .rating)
+        self.reviewsCount = try container.decode(Int.self, forKey: .reviewsCount)
+        self.platform = try container.decode(String.self, forKey: .platform)
+        self.seller = try container.decode(String.self, forKey: .seller)
+        self.deliveryInfo = try container.decode(String.self, forKey: .deliveryInfo)
+        self.inStock = try container.decode(Bool.self, forKey: .inStock)
+        self.score = try? container.decode(Double.self, forKey: .score)
+    }
+    
+    /// Formatted price with currency symbol
+    var formattedPrice: String {
+        "₹\(Int(price))"
+    }
+    
+    /// Star rating display (e.g., "4.5 ⭐")
+    var ratingDisplay: String {
+        if rating > 0 {
+            return String(format: "%.1f ⭐", rating)
+        }
+        return "No ratings"
     }
 }
 
-/// Backend's item format (before we convert to ShoppingItem)
+/// Item with its product search results
+struct ItemWithProducts: Identifiable, Codable {
+    let id: UUID
+    let item: BackendItem
+    let products: [Product]
+    
+    enum CodingKeys: String, CodingKey {
+        case item, products
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.item = try container.decode(BackendItem.self, forKey: .item)
+        self.products = try container.decode([Product].self, forKey: .products)
+    }
+    
+    /// Convert to ShoppingItem for backward compatibility
+    var shoppingItem: ShoppingItem {
+        item.toShoppingItem()
+    }
+}
+
+/// Backend's item format
 struct BackendItem: Codable {
     let name: String
     let category: String
@@ -72,7 +127,6 @@ struct BackendItem: Codable {
     let unit: String?
     let platforms: [String]
     
-    /// Convert backend item to our app's ShoppingItem
     func toShoppingItem() -> ShoppingItem {
         ShoppingItem(
             name: name,
@@ -81,5 +135,16 @@ struct BackendItem: Codable {
             unit: unit,
             platforms: platforms
         )
+    }
+}
+
+/// New response format with products
+struct SearchResponseWithProducts: Codable {
+    let items: [ItemWithProducts]
+    let rawInput: String
+    
+    enum CodingKeys: String, CodingKey {
+        case items
+        case rawInput = "raw_input"
     }
 }
