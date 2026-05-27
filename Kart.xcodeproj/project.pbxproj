@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EE0153B62FBF23FB00D8158B /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = EE0153B52FBF23FB00D8158B /* Auth */; };
+		EE0153B82FBF23FB00D8158B /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = EE0153B72FBF23FB00D8158B /* Functions */; };
+		EE0153BA2FBF23FB00D8158B /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = EE0153B92FBF23FB00D8158B /* PostgREST */; };
+		EE0153BC2FBF23FB00D8158B /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = EE0153BB2FBF23FB00D8158B /* Realtime */; };
+		EE0153BE2FBF23FB00D8158B /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = EE0153BD2FBF23FB00D8158B /* Storage */; };
+		EE0153C02FBF23FB00D8158B /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = EE0153BF2FBF23FB00D8158B /* Supabase */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		EE1B98402F76703F00567814 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +38,22 @@
 		EE1B98492F76703F00567814 /* KartUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KartUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EE0153C82FC1AAA200D8158B /* Exceptions for "Kart" folder in "Kart" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = EE1B98312F76703D00567814 /* Kart */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EE1B98342F76703D00567814 /* Kart */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EE0153C82FC1AAA200D8158B /* Exceptions for "Kart" folder in "Kart" target */,
+			);
 			path = Kart;
 			sourceTree = "<group>";
 		};
@@ -52,6 +74,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE0153BA2FBF23FB00D8158B /* PostgREST in Frameworks */,
+				EE0153B82FBF23FB00D8158B /* Functions in Frameworks */,
+				EE0153C02FBF23FB00D8158B /* Supabase in Frameworks */,
+				EE0153B62FBF23FB00D8158B /* Auth in Frameworks */,
+				EE0153BE2FBF23FB00D8158B /* Storage in Frameworks */,
+				EE0153BC2FBF23FB00D8158B /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,12 +100,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EE0153B42FBF23FB00D8158B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EE1B98292F76703D00567814 = {
 			isa = PBXGroup;
 			children = (
 				EE1B98342F76703D00567814 /* Kart */,
 				EE1B98422F76703F00567814 /* KartTests */,
 				EE1B984C2F76703F00567814 /* KartUITests */,
+				EE0153B42FBF23FB00D8158B /* Frameworks */,
 				EE1B98332F76703D00567814 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +148,12 @@
 			);
 			name = Kart;
 			packageProductDependencies = (
+				EE0153B52FBF23FB00D8158B /* Auth */,
+				EE0153B72FBF23FB00D8158B /* Functions */,
+				EE0153B92FBF23FB00D8158B /* PostgREST */,
+				EE0153BB2FBF23FB00D8158B /* Realtime */,
+				EE0153BD2FBF23FB00D8158B /* Storage */,
+				EE0153BF2FBF23FB00D8158B /* Supabase */,
 			);
 			productName = Kart;
 			productReference = EE1B98322F76703D00567814 /* Kart.app */;
@@ -195,6 +237,9 @@
 			);
 			mainGroup = EE1B98292F76703D00567814;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EE1B98332F76703D00567814 /* Products */;
 			projectDirPath = "";
@@ -393,10 +438,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Kart/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -424,10 +473,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Kart/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -454,7 +507,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
@@ -475,7 +531,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
@@ -495,7 +554,10 @@
 		EE1B985A2F76703F00567814 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -514,7 +576,10 @@
 		EE1B985B2F76703F00567814 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -570,6 +635,50 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EE0153B52FBF23FB00D8158B /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		EE0153B72FBF23FB00D8158B /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		EE0153B92FBF23FB00D8158B /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		EE0153BB2FBF23FB00D8158B /* Realtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Realtime;
+		};
+		EE0153BD2FBF23FB00D8158B /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+		EE0153BF2FBF23FB00D8158B /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE0153B02FBECFCE00D8158B /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EE1B982A2F76703D00567814 /* Project object */;
 }

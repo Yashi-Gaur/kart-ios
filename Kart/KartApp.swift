@@ -9,9 +9,24 @@ import SwiftUI
 
 @main
 struct KartApp: App {
+
+    @StateObject private var authViewModel = AuthViewModel()
+
     var body: some Scene {
         WindowGroup {
-            ListInputView()
+            Group {
+                if authViewModel.isCheckingAuth {
+                    ProgressView()
+                } else if authViewModel.isAuthenticated {
+                    ListInputView()
+                } else {
+                    SignInView()
+                }
+            }
+            .environmentObject(authViewModel)
+            .task {
+                await authViewModel.listenToAuthChanges()
+            }
         }
     }
 }

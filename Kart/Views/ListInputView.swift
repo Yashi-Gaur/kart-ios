@@ -1,19 +1,20 @@
 import SwiftUI
 
 struct ListInputView: View {
-    
+
     @StateObject private var viewModel = SearchViewModel()
-    
+    @EnvironmentObject var authViewModel: AuthViewModel
+
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    
+
                     inputSection
-                    
+
                     Divider()
                         .padding(.vertical, 16)
-                    
+
                     if viewModel.isLoading {
                         loadingView
                     } else if !viewModel.itemsWithProducts.isEmpty {
@@ -25,6 +26,13 @@ struct ListInputView: View {
             }
             .navigationTitle("Kart")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Sign Out", role: .destructive) {
+                        Task { await authViewModel.signOut() }
+                    }
+                }
+            }
             .alert("Error", isPresented: $viewModel.showError) {
                 Button("OK", role: .cancel) {}
             } message: {
@@ -296,4 +304,5 @@ struct ProductCard: View {
 
 #Preview {
     ListInputView()
+        .environmentObject(AuthViewModel())
 }
